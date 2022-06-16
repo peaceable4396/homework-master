@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <button onclick="call()">点名</button>
+
+    <script>
+        var arr = ["zs","ls","ww","zl"]
+        function call(){
+            if (arr.length == 0){
+                alert("已全部提问")
+            }else {
+                var i = Math.floor(Math.random()* (arr.length - 1));
+                alert(arr[i]);
+                arr.splice(i,1)
+            }
+            console.log(arr)
+        }
+    </script>
+</body>
+</html>

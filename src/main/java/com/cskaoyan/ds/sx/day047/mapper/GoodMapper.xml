@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cskaoyan.ds.sx.day047.mapper.GoodMapper">
+    <select id="selectGoodsDetailById" resultMap="goodMap">
+        select goodid as goodId,goodname as goodName from goods where goodid = #{id}
+    </select>
+    <resultMap id="goodMap" type="com.cskaoyan.ds.sx.day047.bean.Goods">
+        <id column="goodId" property="goodId"></id>
+        <result column="goodName" property="goodName"></result>
+        <association property="goodsDetail"
+                     javaType="com.cskaoyan.ds.sx.day047.bean.GoodsDetail"
+                     select="selectGoodsDetailByGoodId"
+                     column="goodId"></association>
+    </resultMap>
+
+    <select id="selectGoodsDetailByGoodId" resultType="com.cskaoyan.ds.sx.day047.bean.GoodsDetail">
+        select goodid as goodId,number ,price from goodsdetail where goodid = #{id}
+    </select>
+
+    <select id="selectGoodsUsingCrossQuery" resultMap="goodDetailMap">
+        select
+            g.goodid as goodId,
+            g.goodname as goodName,
+            d.number as number,
+            d.price as prcie
+        from goods as g left join goodsdetail as d using(goodid)
+        where g.goodid = #{id}
+    </select>
+    <resultMap id="goodDetailMap" type="com.cskaoyan.ds.sx.day047.bean.Goods">
+        <id column="goodId" property="goodId"></id>
+        <result column="goodName" property="goodName"></result>
+        <association property="goodsDetail" javaType="com.cskaoyan.ds.sx.day047.bean.GoodsDetail">
+            <result column="number" property="number"></result>
+            <result column="prcie" property="price"></result>
+        </association>
+    </resultMap>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cskaoyan.ds.sx.day047.mapper.OrderMapper">
+    
+    <select id="selectGoodsListById" resultMap="orderMap">
+        select orderid as orderId,ordermaker as orderMaker from `order` where orderid = #{id}
+    </select>
+    <resultMap id="orderMap" type="com.cskaoyan.ds.sx.day047.bean.Order">
+        <id column="orderId" property="orderId"></id>
+        <result column="orderMaker" property="orderMaker"></result>
+        <collection property="goodList"
+                    ofType="com.cskaoyan.ds.sx.day047.bean.Good"
+                    select="com.cskaoyan.ds.sx.day047.mapper.OrderMapper.selectGoodByOrderId"
+                    column="orderId"></collection>
+    </resultMap>
+
+    <select id="selectGoodByOrderId" resultType="com.cskaoyan.ds.sx.day047.bean.Good">
+        select goodid as goodId,goodname as goodName
+        from o_d as o left join goods as g on o.d_id = g.goodid
+        where o.o_id = #{id}
+    </select>
+
+    <select id="selectGoodsListUsingCrossQuery" resultMap="orderCrossMap">
+        select o.orderid as orderId,
+            o.ordermaker as orderMaker,
+            g.goodid as goodId,
+            g.goodname as goodName
+            from `order` as o
+            left join o_d as od on o.orderid = od.o_id
+            left join goods as g on od.d_id = g.goodid
+        where o.orderid = #{id}
+    </select>
+    <resultMap id="orderCrossMap" type="com.cskaoyan.ds.sx.day047.bean.Order">
+        <id column="orderId" property="orderId"></id>
+        <result column="orderMaker" property="orderMaker"></result>
+        <collection property="goodList" ofType="com.cskaoyan.ds.sx.day047.bean.Good">
+            <id column="goodId" property="goodId"></id>
+            <result column="goodName" property="goodName"></result>
+        </collection>
+    </resultMap>
+</mapper>

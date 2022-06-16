@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cskaoyan.ds.sx.day047.mapper.ArmyMapper">
+
+    <select id="selectPlayerListById" resultMap="ballArmyMap">
+        select id,armyname from ballarmy where id = #{id}
+    </select>
+    <resultMap id="ballArmyMap" type="com.cskaoyan.ds.sx.day047.bean.BallArmy">
+        <id column="id" property="id"></id>
+        <result column="armyname" property="armyName"></result>
+        <collection property="playerList"
+                    ofType="com.cskaoyan.ds.sx.day047.bean.Player"
+                    select="com.cskaoyan.ds.sx.day047.mapper.ArmyMapper.selectPlayByArmyId"
+                    column="id"/>
+    </resultMap>
+
+    <select id="selectPlayByArmyId" resultType="com.cskaoyan.ds.sx.day047.bean.Player">
+        select playerid as playerId,playername as playerName,armyid as armyId from player where armyid = #{id}
+    </select>
+
+
+    <select id="selectPlayerListUsingCrossQuery" resultMap="crossBallArmyMap">
+        select
+            b.id as armyId,
+            b.armyname as armyName,
+            p.playerid as playerId,
+            p.playername as name
+            from ballarmy as b left join player as p
+            on b.id = p.armyid
+        where
+            armyId = #{id}
+    </select>
+
+    <resultMap id="crossBallArmyMap" type="com.cskaoyan.ds.sx.day047.bean.BallArmy">
+        <id column="armyId" property="id"></id>
+        <result column="armyName" property="armyName"></result>
+        <collection property="playerList"
+                    ofType="com.cskaoyan.ds.sx.day047.bean.Player">
+            <id column="playerId" property="playerId"></id>
+            <result column="name" property="playerName"></result>
+        </collection>
+
+    </resultMap>
+</mapper>
